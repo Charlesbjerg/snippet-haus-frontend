@@ -1,6 +1,8 @@
 <template>
     <div class="container snippet-results">
-        <Result v-for="(result, key) in results" :key="key" :resultsKey="key"/>
+        <transition-group name="display-snippets" tag="div">
+            <Result v-for="(result, key) in results" :key="result.id" :resultsKey="key"/>
+        </transition-group>
     </div>
 </template>
 
@@ -21,5 +23,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+.display-snippets {
+    transition: 1s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
 </style>

@@ -13,10 +13,6 @@
   background-color: #FDF4F1;
 }
 
-#app p {
-  font-family: Arial, sans-serif;
-}
-
 #app * {
   box-sizing: border-box;
 }

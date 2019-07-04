@@ -1,5 +1,5 @@
 <template>
-    <article class="snippet" :class="[this.openSnippetClass]" @click="this.openSnippet">
+    <article class="snippet" :class="[this.openSnippetClass]" @click="this.openSnippet" v-on:keyup.esc="this.closeSnippet">
         <div class="snippet-icon">
             <i :class="[this.snippet.icon]"></i>
         </div>
@@ -63,6 +63,9 @@ export default {
             return className;
         }
     },
+    mounted() {
+
+    },
     methods: {
         openSnippet() {
             // Check if snippet currently open
@@ -74,13 +77,15 @@ export default {
                 // Run highlight JS on code
                 this.highlightCode();
 
-            } else {
-                console.log("Snippet already open, how tf did you manage to select another snippet");
-            }
+            } 
         },
         highlightCode() {
             let codeDisplay = this.$refs.codeDisplay;
             hljs.highlightBlock(codeDisplay);
+        },
+        closeSnippet() {
+            console.log("Escape pressed")
+            this.$store.commit('closeSnippet');
         }
     }
 }
@@ -156,6 +161,24 @@ export default {
             pre {
                 margin-top: 4.5em;
             }
+            p {
+                font-family: 'Ropa Sans', Arial;
+            }
+            a.btn {
+                padding: 0.75em 1em;
+                background-color: #fff;
+                color: #000;
+                display: inline-block;
+                margin-top: 0.5em;
+                border: 2px solid $accent;
+                border-radius: $border-radius;
+                text-decoration: none;
+                transition: $default-transition;
+                &:hover {
+                    background-color: $accent;
+                    color: #fff;
+                }
+            }
         }
     }
 
@@ -192,6 +215,9 @@ export default {
         .snippet-link {
             transition: transform 0.5s 0.5s $snippet-timing;
         }
+        .snippet-content pre {
+            transition: margin-top 0.5s 1.9s $snippet-timing;
+        }
     }
 
     /* Element changes */
@@ -200,14 +226,20 @@ export default {
         min-height: 500px;
         width: 868px;
         transform: translateX(-100px);
-        .snippet-icon i {
-            // position: absolute;
-            // top: 32px;
-            // left: calc(50% - 28px);
+        .snippet-content pre {
+            margin-top: 1em;
         }
-        .snippet-link {
-            /* Might need to be -30px */
-            transform: translate(0) rotate(-90deg);
+        &:hover {
+            .snippet-link {
+                color: $accent;
+                transform: translateX(0) rotate(-90deg);
+            }
+            .snippet-content {
+                transform: translate(0);
+            }
+            .snippet-icon {
+                color: $accent-dark;
+            }
         }
     }
 

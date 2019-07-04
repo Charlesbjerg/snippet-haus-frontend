@@ -1,7 +1,7 @@
 <template>
     <main>
         <PageHead />
-        <ResultsContainer />
+        <ResultsContainer v-on:keyup.esc="closeSnippet"/>
     </main>
 </template>
 
@@ -14,5 +14,11 @@ export default {
         'PageHead': PageHead,
         'ResultsContainer': ResultsContainer,
     },
+    methods: {
+        closeSnippet() {
+            console.log("Escape pressed")
+            this.$store.commit('closeSnippet');
+        }
+    }
 }
 </script>
