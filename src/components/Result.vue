@@ -1,5 +1,9 @@
 <template>
-    <article class="snippet" :class="[this.openSnippetClass]" @click="this.openSnippet" v-on:keyup.esc="this.closeSnippet">
+    <article class="snippet" 
+             :class="[this.openSnippetClass]" 
+             @click="this.openSnippet" 
+             v-on:keyup.esc="this.closeSnippet"
+             ref="snippet">
         <div class="snippet-icon">
             <i :class="[this.snippet.icon]"></i>
         </div>
@@ -51,9 +55,12 @@ export default {
                 if (this.resultsKey === this.$store.state.snippetOpened) {
                     // Open the selected snippet
                     className = "active";
+
+                    this.centerSnippet();
+
                 } else {
                     // Hide all the others
-                    className = "not-active";
+                    // className = "not-active";
                 }
 
             } else {
@@ -86,6 +93,10 @@ export default {
         closeSnippet() {
             console.log("Escape pressed")
             this.$store.commit('closeSnippet');
+        },
+        centerSnippet() {
+            // let snippetElement = document.getElementsByClassName('active');
+            // snippetElement[0].scrollIntoView(true);
         }
     }
 }

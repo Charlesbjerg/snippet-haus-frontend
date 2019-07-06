@@ -15,10 +15,7 @@ export default {
         'ResultsContainer': ResultsContainer,
     },
     methods: {
-        closeSnippet() {
-            console.log("Escape pressed")
-            this.$store.commit('closeSnippet');
-        }
+        
     }
 }
 </script>
