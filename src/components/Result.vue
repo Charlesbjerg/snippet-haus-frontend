@@ -1,9 +1,7 @@
 <template>
     <article class="snippet" 
-             :class="[this.openSnippetClass]" 
-             @click="this.openSnippet" 
-             v-on:keyup.esc="this.closeSnippet"
-             ref="snippet">
+             :class="[this.openSnippetClass, this.selectedSnippetClass]" 
+             @click="this.openSnippet">
         <div class="snippet-icon">
             <i :class="[this.snippet.icon]"></i>
         </div>
@@ -24,6 +22,17 @@
 import { mapGetters } from "vuex";
 import hljs from "highlight.js";
 import "highlight.js/styles/atom-one-dark-reasonable.css";
+import VueScrollTo from "vue-scrollto";
+
+var scrollOptions = {
+    container: '#resutlsContainer',
+    easing: 'ease-in',
+    offsetTop: -60,
+    force: true,
+    cancelable: true,
+    x: false,
+    y: true
+}
 
 export default {
     name: "Result",
@@ -55,12 +64,6 @@ export default {
                 if (this.resultsKey === this.$store.state.snippetOpened) {
                     // Open the selected snippet
                     className = "active";
-
-                    this.centerSnippet();
-
-                } else {
-                    // Hide all the others
-                    // className = "not-active";
                 }
 
             } else {
@@ -68,10 +71,18 @@ export default {
             }
 
             return className;
-        }
-    },
-    mounted() {
+        },
+        selectedSnippetClass()  {
+            
+            let className = "";
+            
+            if (this.$store.getters.getSelected == this.resultsKey) {
+                className = "selected";
+            }
 
+            return className;
+
+        }
     },
     methods: {
         openSnippet() {
@@ -95,8 +106,8 @@ export default {
             this.$store.commit('closeSnippet');
         },
         centerSnippet() {
-            // let snippetElement = document.getElementsByClassName('active');
-            // snippetElement[0].scrollIntoView(true);
+            console.log("About to scroll");
+            VueScrollTo.scrollTo(this.$el, 500, scrollOptions);
         }
     }
 }
@@ -233,7 +244,7 @@ export default {
 
     /* Element changes */
     .snippet.active {
-        position: absolute;
+        // position: absolute;
         min-height: 500px;
         width: 868px;
         transform: translateX(-100px);

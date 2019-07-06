@@ -2,6 +2,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import VueScrollTo from 'vue-scrollto';
 
 // FontAwesome
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -12,6 +13,8 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 library.add(faSearch, fabGithub);
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
+
+Vue.use(VueScrollTo);
 
 Vue.config.productionTip = false
 

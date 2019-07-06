@@ -5,19 +5,30 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    
+    // SearchBar
     searchTerm: '',
+
+    // Results
     resultsStatus: false,
     resultsLoading: false,
     searchMade: false,
     results: [],
+
+    // Result
     snippetOpen: false,
     snippetOpened: '',
+
+    // Results Interaction
+    snippetSelected: 0,
+
   },
   getters: {
     searchTerm: state => state.searchTerm,
     getSnippet: (state) => (key) => {
         return state.results[key];
-    }
+    },
+    getSelected: state => state.snippetSelected,
   },
   mutations: {
     updateSearchTerm(state, term) {
@@ -54,6 +65,13 @@ export default new Vuex.Store({
       if (state.snippetOpen) {
         state.snippetOpen = false;
         state.snippetOpened = '';
+      }
+    },
+    selectSnippet(state, direction) {
+      if (direction == "up" && state.snippetSelected != 0) {
+        state.snippetSelected--;
+      } else if (direction == "down" && state.results.length != state.snippetSelected) {
+        state.snippetSelected++;
       }
     }
   },

@@ -18,6 +18,48 @@ export default {
         results() {
             return this.$store.state.results;
         }
+    },
+    mounted() {
+        // this.$store.watch(
+        //     (state, getters) => getters.searchTerm,
+        //     (newTerm, oldTerm) => {
+
+        //         // Trim the string 
+        //         let term = newTerm.trim();
+
+        //         // Make AJAX call
+        //         this.searchSnippets(term);
+
+        //     }
+        // )
+        document.addEventListener("keydown", this.navigateItems);
+    },
+    methods: {
+        navigateItems() {
+            console.log(event);
+
+            // if (this.$store.getters.getSelected() !== false && this.$store.state.resultsStatus) {
+                
+                // Need to listen to events for all controls
+                // Should probably keep track of the currently selected item
+                // Set to false/null if nothing is selected
+    
+                // Enter to open an item
+                // Esc to close the open item
+
+                // Up and down for the list
+                if (event.key == "ArrowDown")  {
+                    this.$store.commit('selectSnippet', 'down');
+                    console.log("Selecting snippet above");
+                } else if (event.key == "ArrowUp") {
+                    this.$store.commit('selectSnippet', 'up');
+                    console.log("Selecting snippet below");                
+                }
+
+
+            // }
+
+        }
     }
 }
 </script>
