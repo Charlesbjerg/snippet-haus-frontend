@@ -22,17 +22,6 @@
 import { mapGetters } from "vuex";
 import hljs from "highlight.js";
 import "highlight.js/styles/atom-one-dark-reasonable.css";
-import VueScrollTo from "vue-scrollto";
-
-var scrollOptions = {
-    container: '#resutlsContainer',
-    easing: 'ease-in',
-    offsetTop: -60,
-    force: true,
-    cancelable: true,
-    x: false,
-    y: true
-}
 
 export default {
     name: "Result",
@@ -104,10 +93,6 @@ export default {
         closeSnippet() {
             console.log("Escape pressed")
             this.$store.commit('closeSnippet');
-        },
-        centerSnippet() {
-            console.log("About to scroll");
-            VueScrollTo.scrollTo(this.$el, 500, scrollOptions);
         }
     }
 }
@@ -117,7 +102,6 @@ export default {
     h2 {
         font-weight: 400;
     }
-    
     .snippet {
         width: 668px;
         background-color: #fff;
@@ -204,6 +188,8 @@ export default {
         }
     }
 
+    /* Animated opening of snippet */
+    $snippet-timing: cubic-bezier(0.075, 0.82, 0.165, 1);
 
     .snippet.selected,
     .snippet:hover {
@@ -219,13 +205,6 @@ export default {
         }
     }
 
-    /* Animated opening of snippet */
-    $snippet-timing: cubic-bezier(0.075, 0.82, 0.165, 1);
-    
-    /* 
-        css-prop transition-time transition-delay,
-    */
-
     .snippet {
         transition:
             opacity 0.5s $snippet-timing,
@@ -235,7 +214,7 @@ export default {
             transform 1.3s 1.3s $snippet-timing
         ;
         .snippet-link {
-            transition: transform 0.5s 0.5s $snippet-timing;
+            transition: transform 0.5s $snippet-timing;
         }
         .snippet-content pre {
             transition: margin-top 0.5s 1.9s $snippet-timing;
@@ -251,6 +230,15 @@ export default {
         .snippet-content pre {
             margin-top: 1em;
         }
+        .snippet-link {
+            transform: translateX(0) rotate(-90deg);
+        }
+        .snippet-content {
+            transform: translate(0);
+        }
+        .snippet-icon {
+            color: #fff;
+        }
         &:hover {
             .snippet-link {
                 color: $accent;
@@ -259,13 +247,6 @@ export default {
             .snippet-content {
                 transform: translate(0);
             }
-            .snippet-icon {
-                color: $accent-dark;
-            }
         }
-    }
-
-    .snippet.not-active {
-        opacity: 0;
     }
 </style>

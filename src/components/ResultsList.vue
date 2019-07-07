@@ -36,7 +36,7 @@ export default {
     },
     methods: {
         navigateItems() {
-            console.log(event);
+            // console.log(event);
 
             // if (this.$store.getters.getSelected() !== false && this.$store.state.resultsStatus) {
                 
@@ -54,6 +54,12 @@ export default {
                 } else if (event.key == "ArrowUp") {
                     this.$store.commit('selectSnippet', 'up');
                     console.log("Selecting snippet below");                
+                } else if (event.key == " " && this.$store.state.snippetSelected !== false) {
+                    this.$store.commit('openSnippet');
+                    console.log("Open Snippet");
+                } else if (event.key == "Escape" && this.$store.state.snippetOpen) {
+                    console.log("Close snippet");
+                    this.$store.commit('closeSnippet');
                 }
 
 

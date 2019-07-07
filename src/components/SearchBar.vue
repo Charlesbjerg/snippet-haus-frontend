@@ -1,23 +1,43 @@
 <template>
     <div class="search-bar">
-        <input type="text" placeholder="Search" v-model="searchTerm"  />
+        <input type="text" placeholder="Search" v-model="term" autofocus />
         <font-awesome-icon icon="search" />
     </div>
 </template>
  <script>
+import _ from 'lodash';
+
  export default {
      name: 'SearchBar',
-     computed: {
-        searchTerm: {
-            get() {
-                return this.$store.state.searchTerm;
-            },
-            set(term) {
-                this.$store.commit('updateSearchTerm', term);
+     data() {
+         return {
+            term: ''
+         }
+     },
+     watch: {
+        term: _.debounce(function(newTerm, oldTerm) {
+                
+            let searchTerm = newTerm.trim();
+
+            if (searchTerm == "") {
+                this.$store.state.resultsStatus = false;
+                this.$store.state.resultsLoading = false;
+                this.$store.state.searchMade = false;
+                this.$store.state.results = [];
+            } else {
+                let googleCheck = searchTerm.substring(0,2);
+                if (googleCheck.toLowerCase() == "g:") {
+                    // Search google
+                    let googleTerm = searchTerm.slice(2);
+                    let googleUrl = "https://google.co.uk/search?q=" + encodeURI(googleTerm); 
+                    window.open(googleUrl, '_blank');
+                } else {
+                    this.$store.commit('updateSearchTerm', searchTerm);
+                }
             }
-        }
-     }
- }
+        }, 1000),
+    }
+}
  </script>
 
  <style lang="scss">
