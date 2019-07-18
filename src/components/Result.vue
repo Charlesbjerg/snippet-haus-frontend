@@ -53,6 +53,8 @@ export default {
                 if (this.resultsKey === this.$store.state.snippetOpened) {
                     // Open the selected snippet
                     className = "active";
+                    // Highlight code entry
+                    this.highlightCode();
                 }
 
             } else {
@@ -74,21 +76,21 @@ export default {
         }
     },
     methods: {
+        // Opens snippet on click - if keyboard isnt used
         openSnippet() {
-            // Check if snippet currently open
+
+            // If no snippet is open
             if (!this.$store.state.snippetOpen) {
                 
                 // Update state for selected Snippet 
                 this.$store.commit('openSnippet', this.resultsKey);
-
-                // Run highlight JS on code
-                this.highlightCode();
 
             } 
         },
         highlightCode() {
             let codeDisplay = this.$refs.codeDisplay;
             hljs.highlightBlock(codeDisplay);
+            console.log("Code should be highlighted");
         },
         closeSnippet() {
             console.log("Escape pressed")

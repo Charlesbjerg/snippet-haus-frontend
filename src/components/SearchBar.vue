@@ -25,9 +25,9 @@ import _ from 'lodash';
                 this.$store.state.searchMade = false;
                 this.$store.state.results = [];
             } else {
+                // Search google
                 let googleCheck = searchTerm.substring(0,2);
                 if (googleCheck.toLowerCase() == "g:") {
-                    // Search google
                     let googleTerm = searchTerm.slice(2);
                     let googleUrl = "https://google.co.uk/search?q=" + encodeURI(googleTerm); 
                     window.open(googleUrl, '_blank');

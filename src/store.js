@@ -56,10 +56,15 @@ export default new Vuex.Store({
       state.resultsLoading = false;
 
     },
-    openSnippet(state) {
+    openSnippet(state, key = null) {
       if (!state.snippetOpen) {
         state.snippetOpen = true;
-        state.snippetOpened = state.snippetSelected; 
+        if (key == null) {
+          state.snippetOpened = state.snippetSelected; 
+        } else {
+          state.snippetOpened = key;
+          state.snippetSelected = key; 
+        }
       }
     },
     closeSnippet(state) {
