@@ -1,7 +1,8 @@
 <template>
     <article class="snippet" 
              :class="[this.openSnippetClass, this.selectedSnippetClass]" 
-             @click="this.openSnippet">
+             @click="this.openSnippet"
+             :keyup="this.copySnippet">
         <div class="snippet-icon">
             <i :class="[this.snippet.icon]"></i>
         </div>
@@ -9,9 +10,10 @@
         <div class="snippet-content">
             <h2>{{ this.snippet.title }}</h2>
             <span class="snippet-subtitle">{{ this.snippet.language }} {{ this.seperator }} {{ this.snippet.platform }}</span>
-            <pre class="snippet-code" ref="codeDisplay">
+            <!-- <pre class="snippet-code" ref="codeDisplay">
                 <code :class="[this.snippet.language]">{{ this.snippet.code }}</code>
-            </pre>
+            </pre> -->
+            <textarea ref="codeDisplay">{{ this.snippet.code }}</textarea>
             <p>{{ this.snippet.description }}</p>
             <a class="btn" :href="this.snippet.externalLink">View Source</a>
         </div>
@@ -20,8 +22,11 @@
 
 <script>
 import { mapGetters } from "vuex";
-import hljs from "highlight.js";
-import "highlight.js/styles/atom-one-dark-reasonable.css";
+
+import CodeMirror from "codemirror";
+import 'codemirror/lib/codemirror.css'
+import "codemirror/theme/material.css";
+
 
 export default {
     name: "Result",
@@ -49,7 +54,7 @@ export default {
             
             if (this.$store.state.snippetOpen) {
                 
-                // If a snippet has been opened
+                // If this snippet has been opened
                 if (this.resultsKey === this.$store.state.snippetOpened) {
                     // Open the selected snippet
                     className = "active";
@@ -75,8 +80,12 @@ export default {
 
         }
     },
+    // mounted: {
+    //     setupCopyListener() {
+    //         window.addEventListener('keydown', this.copySnippet);
+    //     }
+    // },
     methods: {
-        // Opens snippet on click - if keyboard isnt used
         openSnippet() {
 
             // If no snippet is open
@@ -89,12 +98,28 @@ export default {
         },
         highlightCode() {
             let codeDisplay = this.$refs.codeDisplay;
-            hljs.highlightBlock(codeDisplay);
-            console.log("Code should be highlighted");
+            let codeMirror = CodeMirror.fromTextArea(codeDisplay, {
+                theme: 'material',
+                readOnly: true,
+                mode: 'PHP',
+                lineNumbers: true
+            });
+    
+            codeDisplay.classList.add("active");
+
         },
         closeSnippet() {
             console.log("Escape pressed")
             this.$store.commit('closeSnippet');
+            codeDisplay.classList.remove    ("active");
+        },
+        copySnippet(e) {
+            console.log("Keypress");
+            console.log(this.$store.state.getSelected);
+            if (e.which == 67 && e.which == 17 && this.resultsKey == this.$store.state.getSelected) {
+                this.$refs.codeDisplay.select();
+                Document.execCommand('copy');
+            }
         }
     }
 }
@@ -154,8 +179,9 @@ export default {
         }
         .snippet-content {
             height: 150px;
-            max-width: calc(100% - 35px);
-            padding: 1em 0;
+            // max-width: calc(100% - 35px);
+            max-width: 100%;
+            padding: 1em 15px 1em 0px;
             transition: $default-transition;
             h2 {
                 margin: 0 0 0.25em 0;
@@ -165,9 +191,15 @@ export default {
                 font-size: 1.25em;
                 font-style: italic;
                 margin: 0;
+                margin-bottom: 1em;
+                display: inline-block;
             }
-            pre {
+            pre, textarea {
                 margin-top: 4.5em;
+                opacity: 0;
+                transition: $default-transition;
+                display: block;
+                width: 100%;
             }
             p {
                 font-family: 'Ropa Sans', Arial;
@@ -177,7 +209,7 @@ export default {
                 background-color: #fff;
                 color: #000;
                 display: inline-block;
-                margin-top: 0.5em;
+                margin: 0.5em 0;
                 border: 2px solid $accent;
                 border-radius: $border-radius;
                 text-decoration: none;
@@ -237,6 +269,8 @@ export default {
         }
         .snippet-content {
             transform: translate(0);
+            min-height: 500px;
+            overflow-y: auto;
         }
         .snippet-icon {
             color: #fff;

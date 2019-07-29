@@ -8,7 +8,7 @@
                 <h1>Snippet Haus</h1>
                 <span class="subtitle">Saves you searching StackOverflow, right?</span>
             </div>
-            <SearchBar />
+            <SearchBar v-if="search" />
         </div>
         <div class="repo-icon">
             <!-- <font-awesome-icon icon="github" /> -->
@@ -22,6 +22,9 @@ import SearchBar from "./SearchBar";
 export default {
     components: {
         'SearchBar': SearchBar
+    },
+    props: {
+        search: Boolean
     }
 }
 </script>

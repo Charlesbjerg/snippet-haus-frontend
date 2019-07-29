@@ -1,6 +1,6 @@
 <template>
     <main>
-        <PageHead />
+        <PageHead search="false" />
         <ResultsContainer v-on:keyup.esc="closeSnippet"/>
     </main>
 </template>
