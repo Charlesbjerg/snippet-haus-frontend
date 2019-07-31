@@ -2,9 +2,9 @@
     <header>
         <div class="container">
             <div class="branding">
-                <div class="logo">
+                <router-link class="logo" to="/create">
                     <img src="rocket.png" alt="Rocket Icon" />
-                </div>
+                </router-link>
                 <h1>Snippet Haus</h1>
                 <span class="subtitle">Saves you searching StackOverflow, right?</span>
             </div>

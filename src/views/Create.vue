@@ -7,37 +7,37 @@
                     <h2>Create new Snippet</h2>
                 </div>
                 <div class="create-form">
-                    <form @submit="this.saveSnippet">
+                    <form method="POST" @submit="this.saveSnippet">
                         <div class="form-item">
-                            <label>Title</label>
-                            <input type="text" name="title" placeholder="Setup a custom taxonomy" />
+                            <label>Title *</label>
+                            <input type="text" ref="title" placeholder="Setup a custom taxonomy" />
                         </div>
                         <div class="form-item">
                             <label>Icon</label>
-                            <input type="text" name="icon" placeholder="fab fa-wordpress" />
+                            <input type="text" ref="icon" placeholder="fab fa-wordpress" />
                         </div>
                         <div class="form-item">
                             <label>Language</label>
-                            <input type="text" name="language" placeholder="PHP" />
+                            <input type="text" ref="language" placeholder="PHP" />
                         </div>
                         <div class="form-item">
                             <label>Platform</label>
-                            <input type="text" name="platform" placeholder="WordPress" />
+                            <input type="text" ref="platform" placeholder="WordPress" />
                         </div>
                         <div class="form-item">
-                            <label>Description</label>
-                            <textarea name="description"></textarea>
+                            <label>Description *</label>
+                            <textarea ref="description"></textarea>
                         </div>
                         <div class="form-item">
                             <label>External Link</label>
-                            <input type="text" name="externalLink" placeholder="reference.wordpress.com" />
+                            <input type="text" ref="externalLink" placeholder="reference.wordpress.com" />
                         </div>
                         <div class="form-item">
                             <label>Source</label>
-                            <input type="text" name="source" placeholder="wordpress.com" />
+                            <input type="text" ref="source" placeholder="wordpress.com" />
                         </div>
                         <div class="form-item">
-                            <label>Code</label>
+                            <label>Code *</label>
                             <textarea class="code-area" ref="codearea"></textarea>
                         </div>
                         <button class="btn" type="submit">Create</button>
@@ -50,6 +50,7 @@
 
 <script>
 import PageHead from "../components/PageHead";
+import axios from "axios";
 import CodeMirror from "codemirror";
 import 'codemirror/lib/codemirror.css'
 import "codemirror/theme/material.css";
@@ -72,9 +73,24 @@ export default {
         console.log("Code mirror created");
     },
     methods: {
-        saveSnippet() {
+        saveSnippet(e) {
             e.preventDefault();
-            console.log("Save snippet");
+            axios.post('http://127.0.0.1:8001/api/snippet', {
+                title: this.$refs.title.value,
+                icon: this.$refs.icon.value,
+                language: this.$refs.language.value,
+                platform: this.$refs.platform.value,
+                description: this.$refs.description.value,
+                externalLink: this.$refs.externalLink.value,
+                source: this.$refs.source.value,
+                code: this.$refs.codearea.value,
+            })
+            .then(function(response) {
+                console.log(response);
+            })
+            .catch(function(error) {
+                console.log(error);
+            });
         }
     },
 }
