@@ -1,6 +1,6 @@
 <template>
     <main>
-        <PageHead />
+        <!-- <PageHead /> -->
         <div class="container">
             <section class="create-snippet">
                 <div class="create-head">
