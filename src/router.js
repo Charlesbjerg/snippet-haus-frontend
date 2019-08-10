@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Main from './views/Main.vue'
 import Create from './views/Create.vue'
 import About from './views/About.vue';
+import Snippet from './views/Snippet.vue';
 
 Vue.use(Router)
 
@@ -24,6 +25,11 @@ export default new Router({
       path: '/about-snippet-haus',
       name: 'About Snippet Haus',
       component: About
+    },
+    {
+      path: '/snippet/:id',
+      name: 'Snippet',
+      component: Snippet
     }
   ]
 })

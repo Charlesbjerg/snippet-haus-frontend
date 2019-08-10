@@ -22,6 +22,8 @@ export default new Vuex.Store({
     // Results Interaction
     snippetSelected: 0,
 
+    loadedSnippet: []
+
   },
   getters: {
     searchTerm: state => state.searchTerm,
@@ -29,6 +31,7 @@ export default new Vuex.Store({
         return state.results[key];
     },
     getSelected: state => state.snippetSelected,
+    getLoaded: state => state.loadedSnippet
   },
   mutations: {
     updateSearchTerm(state, term) {
@@ -79,6 +82,9 @@ export default new Vuex.Store({
       } else if (direction == "down" && state.results.length - 1 != state.snippetSelected) {
         state.snippetSelected++;
       }
+    },
+    snippetLoaded(state, snippet) {
+      state.loadedSnippet = snippet;
     }
   },
   actions: {

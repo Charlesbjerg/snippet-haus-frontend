@@ -1,19 +1,18 @@
 <template>
-    <router-link :to="this.snippetUrl">
-        <article class="snippet" 
-                :class="[this.openSnippetClass, this.selectedSnippetClass]" 
-                @click="this.openSnippet"
-                :keyup="this.copySnippet">
-            <div class="snippet-icon">
-                <i :class="[this.snippet.icon]"></i>
-            </div>
-            <span class="snippet-link">View</span>
-            <div class="snippet-content">
-                <h2>{{ this.snippet.title }}</h2>
-                <span class="snippet-subtitle">{{ this.snippet.language }} {{ this.seperator }} {{ this.snippet.platform }}</span>
-            </div>
-        </article>
-    </router-link>
+    <article class="snippet" 
+             :keyup="this.copySnippet">
+        <div class="snippet-icon">
+            <i :class="[this.snippet.icon]"></i>
+        </div>
+        <span class="snippet-link">View</span>
+        <div class="snippet-content">
+            <h2>{{ this.snippet.title }}</h2>
+            <span class="snippet-subtitle">{{ this.snippet.language }} {{ this.seperator }} {{ this.snippet.platform }}</span>
+            <textarea ref="codeDisplay">{{ this.snippet.code }}</textarea>
+            <p>{{ this.snippet.description }}</p>
+            <a class="btn" :href="this.snippet.externalLink">View Source</a>
+        </div>
+    </article>
 </template>
 
 <script>
@@ -31,7 +30,7 @@ export default {
     },
     computed: {
         snippet() {
-            return this.$store.getters.getSnippet(this.resultsKey);
+            return this.$store.getters.getLoaded;
         },
         seperator() {
             
@@ -44,57 +43,28 @@ export default {
             return seperatorString;
 
         },
-        openSnippetClass() {
-            
-            let className = "";
-            
-            if (this.$store.state.snippetOpen) {
-                
-                // If this snippet has been opened
-                if (this.resultsKey === this.$store.state.snippetOpened) {
-                    // Open the selected snippet
-                    className = "active";
-                    // Highlight code entry
-                    this.highlightCode();
-                }
-
-            } else {
-                className = "";
-            }
-
-            return className;
-        },
-        selectedSnippetClass()  {
-            
-            let className = "";
-            
-            if (this.$store.getters.getSelected == this.resultsKey) {
-                className = "selected";
-            }
-
-            return className;
-
-        },
-        snippetUrl() {
-            return "/snippet/" + this.snippet.id;
-        }
     },
-    // mounted: {
-    //     setupCopyListener() {
-    //         window.addEventListener('keydown', this.copySnippet);
-    //     }
-    // },
+    beforeRouteUpdate(to, from, text) {
+        console.log("Fetching snippet");
+        let url = "http://127.0.0.1:8001/api/" + $route.params.id;
+
+        axios.get('url')
+        .then((res) => {
+                this.$store.commit('snippetLoaded', res);
+        })
+        .catch((err) => {
+            if (err) {
+                this.$store.state.loadedSnippet = [];
+                console.log("No snippet found, need to throw 404");
+            }
+        });
+        next();
+    },
+    mounted() {
+            console.log("Mounted");
+            window.addEventListener('keydown', this.copySnippet);
+    },
     methods: {
-        openSnippet() {
-
-            // If no snippet is open
-            if (!this.$store.state.snippetOpen) {
-                
-                // Update state for selected Snippet 
-                this.$store.commit('openSnippet', this.resultsKey);
-
-            } 
-        },
         highlightCode() {
             let codeDisplay = this.$refs.codeDisplay;
             let codeMirror = CodeMirror.fromTextArea(codeDisplay, {
@@ -106,11 +76,6 @@ export default {
     
             codeDisplay.classList.add("active");
 
-        },
-        closeSnippet() {
-            console.log("Escape pressed")
-            this.$store.commit('closeSnippet');
-            codeDisplay.classList.remove    ("active");
         },
         copySnippet(e) {
             console.log("Keypress");
@@ -217,70 +182,6 @@ export default {
                     background-color: $accent;
                     color: #fff;
                 }
-            }
-        }
-    }
-
-    /* Animated opening of snippet */
-    $snippet-timing: cubic-bezier(0.075, 0.82, 0.165, 1);
-
-    .snippet.selected,
-    .snippet:hover {
-        .snippet-icon {
-            color: #fff;
-        }
-        .snippet-link {
-            color: #fff;
-            transform: translateX(30px) rotate(-90deg);
-        }
-        .snippet-content {
-            transform: translate(30px);
-        }
-    }
-
-    .snippet {
-        transition:
-            opacity 0.5s $snippet-timing,
-            position 0.01s 0.5s $snippet-timing,
-            min-height 1.3s 1.3s $snippet-timing,
-            width 1.3s 1.3s $snippet-timing,
-            transform 1.3s 1.3s $snippet-timing
-        ;
-        .snippet-link {
-            transition: transform 0.5s $snippet-timing;
-        }
-        .snippet-content pre {
-            transition: margin-top 0.5s 1.9s $snippet-timing;
-        }
-    }
-
-    /* Element changes */
-    .snippet.active {
-        // position: absolute;
-        min-height: 500px;
-        width: 868px;
-        transform: translateX(-100px);
-        .snippet-content pre {
-            margin-top: 1em;
-        }
-        .snippet-link {
-            transform: translateX(0) rotate(-90deg);
-        }
-        .snippet-content {
-            transform: translate(0);
-            min-height: 500px;
-            overflow-y: auto;
-        }
-        .snippet-icon {
-            color: #fff;
-        }
-        &:hover {
-            .snippet-link {
-                color: $accent;
-                transform: translateX(0) rotate(-90deg);
-            }
-            .snippet-content {
-                transform: translate(0);
             }
         }
     }
