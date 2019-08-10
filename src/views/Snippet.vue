@@ -1,5 +1,5 @@
 <template>
-    <article class="snippet" 
+    <main class="snippet" 
              :keyup="this.copySnippet">
         <div class="snippet-icon">
             <i :class="[this.snippet.icon]"></i>
@@ -8,11 +8,12 @@
         <div class="snippet-content">
             <h2>{{ this.snippet.title }}</h2>
             <span class="snippet-subtitle">{{ this.snippet.language }} {{ this.seperator }} {{ this.snippet.platform }}</span>
-            <textarea ref="codeDisplay">{{ this.snippet.code }}</textarea>
+            <!-- <textarea ref="codeDisplay">{{ this.snippet.code }}</textarea> -->
+            <div ref="codeDisplay"></div>
             <p>{{ this.snippet.description }}</p>
             <a class="btn" :href="this.snippet.externalLink">View Source</a>
         </div>
-    </article>
+    </main>
 </template>
 
 <script>
@@ -21,7 +22,7 @@ import { mapGetters } from "vuex";
 import CodeMirror from "codemirror";
 import 'codemirror/lib/codemirror.css'
 import "codemirror/theme/material.css";
-
+import axios from "axios";
 
 export default {
     name: "Result",
@@ -44,36 +45,57 @@ export default {
 
         },
     },
-    beforeRouteUpdate(to, from, text) {
-        console.log("Fetching snippet");
-        let url = "http://127.0.0.1:8001/api/" + $route.params.id;
+    beforeRouteEnter(to, from, next) {
+        next(vm => {
 
-        axios.get('url')
-        .then((res) => {
-                this.$store.commit('snippetLoaded', res);
-        })
-        .catch((err) => {
-            if (err) {
-                this.$store.state.loadedSnippet = [];
-                console.log("No snippet found, need to throw 404");
-            }
-        });
-        next();
+            // TODO: Find a way to change the route base in a config file
+            let url = "http://127.0.0.1:8000/api/" + to.params.id;
+
+            axios.get(url)
+            .then((res) => {
+                console.log("Commiting to store");
+                console.log(res);
+                vm.$store.commit('snippetLoaded', res.data);
+            })
+            .catch((err) => {
+                if (err) {
+                    console.log("No snippet found, need to throw 404");
+                    console.log(err);
+                    vm.$store.state.loadedSnippet = [];
+                }
+            });
+
+        });        
     },
     mounted() {
-            console.log("Mounted");
-            window.addEventListener('keydown', this.copySnippet);
+        console.log("Mounted");
+    
+        // Listen for copy event
+        window.addEventListener('keydown', this.copySnippet);
+    
+        // Listen for change to vuex when snippet is loaded
+        this.$store.subscribe((mutation, state) => {
+            if (mutation.type == "snippetLoaded" &&  state.snippetLoaded != []) {
+                console.log("About to highlight code");
+                this.highlightCode();
+            }
+        });
+
     },
     methods: {
         highlightCode() {
+            
             let codeDisplay = this.$refs.codeDisplay;
-            let codeMirror = CodeMirror.fromTextArea(codeDisplay, {
+
+            let codeMirror = CodeMirror(codeDisplay, {
                 theme: 'material',
+                value: this.snippet.code,
                 readOnly: true,
-                mode: 'PHP',
+                mode: 'php',
                 lineNumbers: true
             });
     
+
             codeDisplay.classList.add("active");
 
         },

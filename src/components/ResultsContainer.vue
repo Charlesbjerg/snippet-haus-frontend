@@ -40,7 +40,7 @@ export default {
         searchSnippets(term) {
 
             // Setup URL
-            let url = "http://127.0.0.1:8001/api/search";
+            let url = "http://127.0.0.1:8000/api/search";
             axios.post(url, {
                 search: term
             })
