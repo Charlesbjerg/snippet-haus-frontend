@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import VueScrollTo from 'vue-scrollto';
+import VueClipboard from 'vue-clipboard2'
 
 // FontAwesome
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -15,7 +16,8 @@ library.add(faSearch, fabGithub);
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 Vue.use(VueScrollTo);
-
+Vue.use(VueClipboard)
+ 
 Vue.config.productionTip = false
 
 new Vue({
