@@ -1,7 +1,7 @@
 <template>
     <div id="app">
         <PageHead search="false" />
-        <transition name="router-animate" enter-active-class="animated fadeInDown" leave-active-class="animated fadeOutDown">
+        <transition name="fade" mode="out-in">
           <router-view/>
         </transition>
     </div>
@@ -26,8 +26,6 @@ export default {
 
 
 <style lang="scss">
-// @import "https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css";
-
 #app {
   font-family: 'Ropa Sans', Arial, sans-serif;
   font-weight: 400;
@@ -39,4 +37,22 @@ export default {
 #app * {
   box-sizing: border-box;
 }
+
+a {
+  color: #000;
+  text-decoration: none;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition-duration: 0.3s;
+  transition-property: opacity;
+  transition-timing-function: ease;
+}
+
+.fade-enter,
+.fade-leave-active {
+  opacity: 0
+}
+
 </style>

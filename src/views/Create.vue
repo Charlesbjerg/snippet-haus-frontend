@@ -75,7 +75,7 @@ export default {
     methods: {
         saveSnippet(e) {
             e.preventDefault();
-            axios.post('http://127.0.0.1:8001/api/snippet', {
+            axios.post('http://127.0.0.1:8000/api/snippet', {
                 title: this.$refs.title.value,
                 icon: this.$refs.icon.value,
                 language: this.$refs.language.value,

@@ -2,16 +2,21 @@
     <header>
         <div class="container">
             <div class="branding">
-                <div class="logo">
+                <router-link to="/" class="logo">
                     <img src="/rocket.png" alt="Rocket Icon" />
-                </div>
+                </router-link>
                 <h1>Snippet Haus</h1>
                 <span class="subtitle">Saves you searching StackOverflow, right?</span>
             </div>
-            <SearchBar v-if="search" />
+            <SearchBar v-bind:class="this.searchActive.search" class="search-bar"/>
+            <router-link v-bind:class="this.searchActive.backArrow" to="/" class="back-arrow">
+                <div class="link-content">
+                    <i class="fas fa-long-arrow-alt-left"></i> Go Back
+                </div>
+            </router-link>
         </div>
         <div class="settings">
-            <button type="button" @click="showSettings"><i class="fas fa-cogs"></i></button>
+            <button type="button" @click="showSettings"><i class="fas fa-ellipsis-v"></i></button>
             <div class="settings-list" ref="settingsList">
                 <router-link to="/"><i class="fas fa-home"></i></router-link>
                 <a href="https://github.com/Charlesbjerg/snippet-haus" title="View on GitHub"><i class="fab fa-github"></i></a>
@@ -29,13 +34,16 @@ export default {
     components: {
         'SearchBar': SearchBar
     },
-    props: {
-        search: String
-    },
-    data() {
-        return {
-            settingsOpen: false
-        };
+    computed: {
+        displaySearch() {
+            return this.$store.state.displaySearch;
+        },
+        searchActive() {
+          return {
+              search: this.displaySearch ? 'active' : '',
+              backArrow: !this.displaySearch ? 'active' : ''
+          }
+        }
     },
     methods: {
         showSettings() {
@@ -51,7 +59,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 header {
     background-color: $accent;
     padding: 1em 0;
@@ -93,6 +101,43 @@ header {
             span {
                 font-size: 1.25em;
                 font-style: italic;
+            }
+        }
+        .back-arrow {
+            color: #fff;
+            display: inline-block;
+            opacity: 0;
+            max-height: 0;
+            font-size: 25px;
+            border-radius: $border-radius;
+            transition: 0.75s ease-in-out;
+            .link-content {
+                padding: 0.5rem 1rem;
+                max-height: 0;
+                overflow: hidden;
+            }
+            &.active {
+                margin-top: 1em;
+                opacity: 1;
+                max-height: 75px;
+                .link-content {
+                    max-height: 45px;
+                }
+            }
+            &:hover {
+                background-color: $accent-dark;
+            }
+        }
+        .search-bar {
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            margin: 0;
+            transition: 0.75s ease-in-out;
+            &.active {
+                max-height: 93px;
+                opacity: 1;
+                margin: 1em 0;
             }
         }
     }
@@ -138,8 +183,22 @@ header {
                 &:hover {
                     color: #000;
                 }
+                &.router-link-active {
+                    color: #000;
+                }
             }
         }
     }
 }
+
+@media screen and (max-width: 500px) {
+    .settings {
+        .settings-list.active {
+           -webkit-box-shadow: 0px 2px 20px 0px rgba(0,0,0,0.35);
+            -moz-box-shadow: 0px 2px 20px 0px rgba(0,0,0,0.35);
+            box-shadow: 0px 2px 20px 0px rgba(0,0,0,0.35); 
+        }
+    }
+}
+
 </style>

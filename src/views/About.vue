@@ -32,13 +32,14 @@ export default {
 </script>
 
 
-<style lang="scss">
+<style lang="scss" scoped>
     main {
         max-width: $container-width;
+        display: block;
         padding: 1em;
-        margin: 0 auto;
+        margin: 0 auto 1em;
         width: 100%;
-        height: calc(100vh - 340px);
+        min-height: calc(100vh - 340px);
         h1 {
             font-weight: 500;
         }

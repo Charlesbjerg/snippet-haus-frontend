@@ -32,6 +32,7 @@ import _ from 'lodash';
                     let googleUrl = "https://google.co.uk/search?q=" + encodeURI(googleTerm); 
                     window.open(googleUrl, '_blank');
                 } else {
+                    this.$store.state.resultsLoading = true;
                     this.$store.commit('updateSearchTerm', searchTerm);
                 }
             }

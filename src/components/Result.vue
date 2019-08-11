@@ -1,9 +1,6 @@
 <template>
     <router-link :to="this.snippetUrl">
-        <article class="snippet" 
-                :class="[this.openSnippetClass, this.selectedSnippetClass]" 
-                @click="this.openSnippet"
-                :keyup="this.copySnippet">
+        <article class="snippet">
             <div class="snippet-icon">
                 <i :class="[this.snippet.icon]"></i>
             </div>
@@ -17,13 +14,6 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-
-import CodeMirror from "codemirror";
-import 'codemirror/lib/codemirror.css'
-import "codemirror/theme/material.css";
-
-
 export default {
     name: "Result",
     props: {
@@ -42,85 +32,11 @@ export default {
             }
 
             return seperatorString;
-
-        },
-        openSnippetClass() {
-            
-            let className = "";
-            
-            if (this.$store.state.snippetOpen) {
-                
-                // If this snippet has been opened
-                if (this.resultsKey === this.$store.state.snippetOpened) {
-                    // Open the selected snippet
-                    className = "active";
-                    // Highlight code entry
-                    this.highlightCode();
-                }
-
-            } else {
-                className = "";
-            }
-
-            return className;
-        },
-        selectedSnippetClass()  {
-            
-            let className = "";
-            
-            if (this.$store.getters.getSelected == this.resultsKey) {
-                className = "selected";
-            }
-
-            return className;
-
         },
         snippetUrl() {
             return "/snippet/" + this.snippet.id;
         }
     },
-    // mounted: {
-    //     setupCopyListener() {
-    //         window.addEventListener('keydown', this.copySnippet);
-    //     }
-    // },
-    methods: {
-        openSnippet() {
-
-            // If no snippet is open
-            if (!this.$store.state.snippetOpen) {
-                
-                // Update state for selected Snippet 
-                this.$store.commit('openSnippet', this.resultsKey);
-
-            } 
-        },
-        highlightCode() {
-            let codeDisplay = this.$refs.codeDisplay;
-            let codeMirror = CodeMirror.fromTextArea(codeDisplay, {
-                theme: 'material',
-                readOnly: true,
-                mode: 'PHP',
-                lineNumbers: true
-            });
-    
-            codeDisplay.classList.add("active");
-
-        },
-        closeSnippet() {
-            console.log("Escape pressed")
-            this.$store.commit('closeSnippet');
-            codeDisplay.classList.remove    ("active");
-        },
-        copySnippet(e) {
-            console.log("Keypress");
-            console.log(this.$store.state.getSelected);
-            if (e.which == 67 && e.which == 17 && this.resultsKey == this.$store.state.getSelected) {
-                this.$refs.codeDisplay.select();
-                Document.execCommand('copy');
-            }
-        }
-    }
 }
 </script>
 
@@ -129,12 +45,12 @@ export default {
         font-weight: 400;
     }
     .snippet {
-        width: 668px;
+        width: 100%;
         background-color: #fff;
         border-radius: $border-radius;
         min-height: 150px;
         padding-left: 165px;
-        margin-bottom: 2em;
+        margin: 0 0 2em 0;
         position: relative;
         cursor: pointer;
         box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
@@ -178,7 +94,6 @@ export default {
         }
         .snippet-content {
             height: 150px;
-            // max-width: calc(100% - 35px);
             max-width: 100%;
             padding: 1em 15px 1em 0px;
             transition: $default-transition;
@@ -193,38 +108,11 @@ export default {
                 margin-bottom: 1em;
                 display: inline-block;
             }
-            pre, textarea {
-                margin-top: 4.5em;
-                opacity: 0;
-                transition: $default-transition;
-                display: block;
-                width: 100%;
-            }
-            p {
-                font-family: 'Ropa Sans', Arial;
-            }
-            a.btn {
-                padding: 0.75em 1em;
-                background-color: #fff;
-                color: #000;
-                display: inline-block;
-                margin: 0.5em 0;
-                border: 2px solid $accent;
-                border-radius: $border-radius;
-                text-decoration: none;
-                transition: $default-transition;
-                &:hover {
-                    background-color: $accent;
-                    color: #fff;
-                }
-            }
         }
     }
 
-    /* Animated opening of snippet */
+    /* Snippet transitions */
     $snippet-timing: cubic-bezier(0.075, 0.82, 0.165, 1);
-
-    .snippet.selected,
     .snippet:hover {
         .snippet-icon {
             color: #fff;
@@ -238,50 +126,34 @@ export default {
         }
     }
 
-    .snippet {
-        transition:
-            opacity 0.5s $snippet-timing,
-            position 0.01s 0.5s $snippet-timing,
-            min-height 1.3s 1.3s $snippet-timing,
-            width 1.3s 1.3s $snippet-timing,
-            transform 1.3s 1.3s $snippet-timing
-        ;
-        .snippet-link {
-            transition: transform 0.5s $snippet-timing;
-        }
-        .snippet-content pre {
-            transition: margin-top 0.5s 1.9s $snippet-timing;
-        }
-    }
+    @media screen and (max-width: 500px) {
 
-    /* Element changes */
-    .snippet.active {
-        // position: absolute;
-        min-height: 500px;
-        width: 868px;
-        transform: translateX(-100px);
-        .snippet-content pre {
-            margin-top: 1em;
-        }
-        .snippet-link {
-            transform: translateX(0) rotate(-90deg);
-        }
-        .snippet-content {
-            transform: translate(0);
-            min-height: 500px;
-            overflow-y: auto;
-        }
-        .snippet-icon {
-            color: #fff;
-        }
-        &:hover {
+        .snippet { 
+            flex-direction: column;
+            position: unset;
+            padding: 0;
+            .snippet-icon {
+                position: unset;
+                width: 100%;
+                border-bottom-left-radius: 0;
+                padding: 1em;
+            }
             .snippet-link {
-                color: $accent;
-                transform: translateX(0) rotate(-90deg);
+                display: none;
             }
             .snippet-content {
-                transform: translate(0);
+                position: unset;
+                text-align: center;
+                padding: 1em;
+                height: unset;
+            }
+            &:hover {
+                .snippet-content {
+                    transform: none;
+                }
             }
         }
+
     }
+
 </style>

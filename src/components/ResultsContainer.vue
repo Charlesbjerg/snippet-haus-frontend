@@ -1,9 +1,11 @@
 <template>
     <section class="container" id="resultsContainer">
-        <ResultsList v-if="resultsStatus && !resultsLoading && results.length !== 0" />
-        <ResultsSpinner v-else-if="resultsLoading" />
-        <NoResults v-else-if="!resultsStatus && !resultsLoading && searchMade" />
-        <span v-else-if="!searchMade">Search not made yet</span>
+        <transition name="fade" mode="out-in">
+            <ResultsList v-if="resultsStatus && !resultsLoading && results.length !== 0" />
+            <ResultsSpinner v-else-if="resultsLoading"/>
+            <NoResults v-else-if="!resultsStatus && !resultsLoading && searchMade" />
+            <span v-else-if="!searchMade">Go ahead, search for some code.</span>
+        </transition>
     </section>
 </template>
 
@@ -39,6 +41,9 @@ export default {
     methods: {
         searchSnippets(term) {
 
+            // Results loading
+            this.$store.state.resultsLoading = true;
+
             // Setup URL
             let url = "http://127.0.0.1:8000/api/search";
             axios.post(url, {
@@ -46,6 +51,8 @@ export default {
             })
             .then((res) => {
                 this.$store.commit('updateResults', res.data);
+                // Results no longer loading
+                this.$store.state.resultsLoading = false;
             })
             .catch((err) => {
                 if (err) {
@@ -54,8 +61,6 @@ export default {
                 }
             });
 
-            // Results no longer loading
-            this.$store.state.resultsLoading = false;
 
         }
     }
@@ -67,8 +72,8 @@ export default {
         max-width: $container-width;
         padding: 1em;
         margin: 0 auto;
-        width: 100%;
-        height: calc(100vh - 340px);
+        width: 95%;
+        min-height: calc(100vh - 365px);
         position: relative;
     }
     span {

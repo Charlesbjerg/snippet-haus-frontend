@@ -1,16 +1,18 @@
 <template>
-  <main class="snippet" :keyup="this.copySnippet">
-    <div class="snippet-icon">
-      <i :class="[this.snippet.icon]"></i>
-    </div>
-    <span class="snippet-link">View</span>
-    <div class="snippet-content">
-      <h2>{{ this.snippet.title }}</h2>
-      <span class="snippet-subtitle">{{ this.snippet.language }} {{ this.seperator }} {{ this.snippet.platform }}</span>
-      <div ref="codeDisplay"></div>
-      <p>{{ this.snippet.description }}</p>
-      <a class="btn" :href="this.snippet.externalLink">View Source</a>
-    </div>
+  <main>
+    <section class="snippet" :keyup="this.copySnippet">
+      <div class="snippet-icon">
+        <i :class="[this.snippet.icon]"></i>
+      </div>
+      <span class="snippet-link">View</span>
+      <div class="snippet-content">
+        <h2>{{ this.snippet.title }}</h2>
+        <span class="snippet-subtitle">{{ this.snippet.language }} {{ this.seperator }} {{ this.snippet.platform }}</span>
+        <div ref="codeDisplay" class="code-display active"></div>
+        <p>{{ this.snippet.description }}</p>
+        <a class="btn" :href="this.snippet.externalLink">View Source</a>
+      </div>
+    </section>
   </main>
 </template>
 
@@ -48,6 +50,9 @@ export default {
   },
   beforeRouteEnter(to, from, next) {
     next(vm => {
+      // Hide the search bar
+      vm.$store.state.displaySearch = false;
+
       // TODO: Find a way to change the route base in a config file
       let url = "http://127.0.0.1:8000/api/" + to.params.id;
 
@@ -67,9 +72,12 @@ export default {
         });
     });
   },
+  beforeRouteLeave(to, from, next) {
+    // Display the search bar before leave
+    this.$store.state.displaySearch = true;
+    next();
+  },
   mounted() {
-    console.log("Mounted");
-
     // Listen for copy event
     window.addEventListener("keydown", this.copySnippet);
     window.addEventListener("keyup", this.altNotDown);
@@ -94,7 +102,6 @@ export default {
         lineNumbers: true
       });
 
-      codeDisplay.classList.add("active");
     },
     copySnippet(e) {
 
@@ -118,16 +125,19 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+main {
+  display: flex;
+  justify-content: center;
+}
 .snippet {
   width: $container-width;
   background-color: #fff;
   border-radius: $border-radius;
   min-height: 150px;
   padding-left: 165px;
-  margin-top: 1em;
+  margin: 1em;
   position: relative;
-  cursor: pointer;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
   overflow: hidden;
   h2 {
@@ -170,8 +180,6 @@ export default {
     transition: $default-transition;
   }
   .snippet-content {
-    height: 150px;
-    // max-width: calc(100% - 35px);
     max-width: 100%;
     padding: 1em 15px 1em 0px;
     transition: $default-transition;
@@ -209,4 +217,44 @@ export default {
     }
   }
 }
+
+/* CodeMirror scroll override */
+.CodeMirror-scroll {
+  overflow: auto !important;
+}
+
+@media screen and (max-width: 500px) {
+
+    .snippet { 
+        flex-direction: column;
+        position: unset;
+        padding: 0;
+        .snippet-icon {
+            height: auto;
+            position: unset;
+            width: 100%;
+            border-bottom-left-radius: 0;
+            padding: 1em;
+        }
+        .snippet-link {
+            display: none;
+        }
+        .snippet-content {
+            position: unset;
+            text-align: center;
+            padding: 1em;
+            height: unset;
+            .code-display { 
+              text-align: left;
+            }
+        }
+        &:hover {
+            .snippet-content {
+                transform: none;
+            }
+        }
+    }
+
+}
+
 </style>
