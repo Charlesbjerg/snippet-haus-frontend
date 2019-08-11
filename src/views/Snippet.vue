@@ -55,7 +55,7 @@ export default {
       vm.$store.state.displaySearch = false;
 
       // TODO: Find a way to change the route base in a config file
-      let url = "http://127.0.0.1:8000/api/" + to.params.id;
+      let url = "/api/" + to.params.id;
 
       axios
         .get(url)

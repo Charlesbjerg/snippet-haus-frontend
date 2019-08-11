@@ -45,7 +45,7 @@ export default {
             this.$store.state.resultsLoading = true;
 
             // Setup URL
-            let url = "http://127.0.0.1:8000/api/search";
+            let url = "/api/search";
             axios.post(url, {
                 search: term
             })
