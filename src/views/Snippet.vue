@@ -10,6 +10,7 @@
         <span class="snippet-subtitle">{{ this.snippet.language }} {{ this.seperator }} {{ this.snippet.platform }}</span>
         <div ref="codeDisplay" class="code-display active"></div>
         <p>{{ this.snippet.description }}</p>
+        <span v-if="this.snippet.source" class="source">Source: {{ this.snippet.source }}</span>
         <a class="btn" :href="this.snippet.externalLink">View Source</a>
       </div>
     </section>
@@ -199,6 +200,11 @@ main {
     }
     p {
       font-family: "Ropa Sans", Arial;
+    }
+    .source {
+      display: inline-block;
+      font-style: italic;
+      width: 100%;
     }
     a.btn {
       padding: 0.75em 1em;

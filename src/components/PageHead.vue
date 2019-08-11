@@ -19,7 +19,7 @@
             <button type="button" @click="showSettings"><i class="fas fa-ellipsis-v"></i></button>
             <div class="settings-list" ref="settingsList">
                 <router-link to="/"><i class="fas fa-home"></i></router-link>
-                <a href="https://github.com/Charlesbjerg/snippet-haus" title="View on GitHub"><i class="fab fa-github"></i></a>
+                <a href="https://github.com/Charlesbjerg/snippet-haus-frontend" title="View on GitHub"><i class="fab fa-github"></i></a>
                 <!-- <router-link to="/create"><i class="far fa-plus-square"></i></router-link> -->
                 <router-link to="/about-snippet-haus" title="View more info about snippet haus"><i class="fas fa-info-circle"></i></router-link>
             </div>
