@@ -51,6 +51,7 @@
 <script>
 import PageHead from "../components/PageHead";
 import axios from "axios";
+import {createAwsRequest} from "../helpers.js";
 import CodeMirror from "codemirror";
 import 'codemirror/lib/codemirror.css'
 import "codemirror/theme/material.css";
@@ -75,7 +76,8 @@ export default {
     methods: {
         saveSnippet(e) {
             e.preventDefault();
-            axios.post('/api/snippet', {
+
+            let data = {
                 title: this.$refs.title.value,
                 icon: this.$refs.icon.value,
                 language: this.$refs.language.value,
@@ -84,6 +86,13 @@ export default {
                 externalLink: this.$refs.externalLink.value,
                 source: this.$refs.source.value,
                 code: this.$refs.codearea.value,
+            };
+
+            let request = this.createAwsRequest(data, 'POST'); 
+
+            axios({
+                url: process.env.VUE_APP_AWS_GATEWAY + '/snippet',
+                method: request.httpMethod,
             })
             .then(function(response) {
                 console.log(response);
