@@ -11,6 +11,15 @@ import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { faGithub as fabGithub } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
+// Helpers
+import { createAwsRequest } from "./helpers";
+
+Vue.mixin({
+  methods: {
+    createAwsRequest: createAwsRequest
+  }
+});
+
 library.add(faSearch, fabGithub);
 
 Vue.component('font-awesome-icon', FontAwesomeIcon);
@@ -19,8 +28,6 @@ Vue.use(VueScrollTo);
 Vue.use(VueClipboard);
  
 Vue.config.productionTip = false;
-
-console.log(process.env);
 
 new Vue({
   router,
